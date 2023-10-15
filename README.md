@@ -1,2 +1,2 @@
-# psag
+# PSAG
 Primary School Arithmetic Generator
