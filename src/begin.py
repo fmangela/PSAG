@@ -3,12 +3,14 @@
 @项目描述：这个项目主要功能是生成算数题给小朋友做练习
 """
 # import库
+from functools import wraps
 import tkinter as tk
 from tkinter import ttk
 # from tkinter import messagebox
-# import random
+import random
 # import pandas as pd
 # from openpyxl import Workbook
+from Algorithm_Packet import Plus_Calculation_Generator, Minus_Calculation_Generator, Multiply_Calculation_Generator, Divide_Calculation_Generator, Compare_Calculation_Generator
 
 
 class MainWindow:
@@ -173,7 +175,7 @@ class MainWindow:
         # 生成一个出题数量的frame框，放入选项卡内
         exercises_num_frame = tk.Frame(tab1, borderwidth=1, relief="solid")
         exercises_num_frame.grid(column=0, row=2, sticky='we', padx=5, pady=5)
-        # 生成一个label，名称为"出题参数"
+        # 生成一个label，名称为"出题数量"
         exercises_num_label = tk.Label(exercises_num_frame, text="出题数量", font=("YaHei", 12))
         exercises_num_label.grid(column=0, row=0, sticky='we', padx=3, pady=3)
         # 添加出题数量
@@ -222,14 +224,30 @@ class MainWindow:
         text.insert('end', output_str)
         text.configure(state='disabled')
 
+    # 装饰函数，用于按下按钮后将按钮置不可操作状态
+    def disable_button_during_generation(func):
+        """
+        一个类内的装饰器函数，需要import wraps装饰器函数
+        :param func: 装饰的函数
+        :return: 装饰后的函数
+        功能：装饰一个按钮，在工作的之后将按钮变为不可按状态，工作结束后放开
+        """
+        @wraps(func)
+        def wrapper(self, *args, **kwargs):
+            self.generate_button.configure(state='disabled')
+            result = func(self, *args, **kwargs)
+            self.generate_button.configure(state='normal')
+            return result
+        return wrapper
+
+    @disable_button_during_generation
     def generate_func(self):
         """
         该函数用于根据用户输入的参数生成题目，并将题目写入xlsx文件中
         :return:
         """
-        # 首先将按钮禁止，防止高速按钮事件
-        self.generate_button.configure(state='disabled')
-
+        # 开始运行
+        self.text_output_func(self.output_text1, "----------\n")
         # 获取参数
         self.text_output_func(self.output_text1, "正在获取参数\n")
         start_num = self.start_entry.get()
@@ -243,8 +261,12 @@ class MainWindow:
         exercises_num = self.exercises_num_entry.get()
 
         # 验证参数正确性
+        self.text_output_func(self.output_text1, "正在验证参数准确性\n")
         if start_num.isdigit():
             start_num = int(start_num)
+            if start_num < 0:
+                self.text_output_func(self.output_text1, "起始数字请输入大于0的数\n")
+                return
         else:
             self.text_output_func(self.output_text1, "起始数字输入错误，请重新输入\n")
             return
@@ -264,6 +286,97 @@ class MainWindow:
         else:
             self.text_output_func(self.output_text1, "出题数量输入错误，请重新输入\n")
             return
+        if choose_plus != 1 and choose_plus != 0:
+            self.text_output_func(self.output_text1, "内部错误，请联系管理员\n")
+            return
+        if choose_minus != 1 and choose_minus != 0:
+            self.text_output_func(self.output_text1, "内部错误，请联系管理员\n")
+            return
+        if choose_multiply != 1 and choose_multiply != 0:
+            self.text_output_func(self.output_text1, "内部错误，请联系管理员\n")
+            return
+        if choose_divide != 1 and choose_divide != 0:
+            self.text_output_func(self.output_text1, "内部错误，请联系管理员\n")
+            return
+        if choose_compare != 1 and choose_compare != 0:
+            self.text_output_func(self.output_text1, "内部错误，请联系管理员\n")
+            return
+        if choose_remainder != 1 and choose_remainder != 0:
+            self.text_output_func(self.output_text1, "内部错误，请联系管理员\n")
+            return
+        # 一定要勾选算法题目
+        if not(choose_plus or choose_minus or choose_multiply or choose_divide or choose_compare):
+            self.text_output_func(self.output_text1, "请至少选择一项算法\n")
+            return
+
+        # 生成题目
+        self.text_output_func(self.output_text1, "正在生成题目\n")
+        # 选择参数做成数学运算字典
+        method_dict = {"plus": choose_plus, "minus": choose_minus, "multiply": choose_multiply, "divide": choose_divide,
+                       "compare": choose_compare}
+
+        # 平均分配题目数量
+        method_count = sum(method_dict.values())
+        base_counts = exercises_num // method_count
+        base_counts_remain = exercises_num % method_count
+        filtered_method_dict = {k: v for k, v in method_dict.items() if v == 1}
+        # 算数方法都赋值基础的出题数量
+        filtered_method_count_dict = {key: base_counts for key in filtered_method_dict}
+        # get做法可能会有None值出来
+        plus_method_count = filtered_method_count_dict.get("plus")
+        if plus_method_count is None:
+            plus_method_count = 0
+        minus_method_count = filtered_method_count_dict.get("minus")
+        if minus_method_count is None:
+            minus_method_count = 0
+        multiply_method_count = filtered_method_count_dict.get("multiply")
+        if multiply_method_count is None:
+            multiply_method_count = 0
+        divide_method_count = filtered_method_count_dict.get("divide")
+        if divide_method_count is None:
+            divide_method_count = 0
+        compare_method_count = filtered_method_count_dict.get("compare")
+        if compare_method_count is None:
+            compare_method_count = 0
+        # 随机抽取中余数匹配算法数量
+        if len(filtered_method_count_dict) >= base_counts_remain:
+            remain_method_lst = random.sample(filtered_method_count_dict.keys(), base_counts_remain)
+        else:
+            self.text_output_func(self.output_text1, "算法错误，请联系管理员\n")
+            return
+        for i in remain_method_lst:
+            if i == "plus":
+                plus_method_count += 1
+            elif i == "minus":
+                minus_method_count += 1
+            elif i == "multiply":
+                multiply_method_count += 1
+            elif i == "divide":
+                divide_method_count += 1
+            elif i == "compare":
+                compare_method_count += 1
+        # 平均出题数量算法验证
+        if not(exercises_num == sum([plus_method_count, minus_method_count,
+                                     multiply_method_count, divide_method_count, compare_method_count])):
+            self.text_output_func(self.output_text1, "算法错误，请联系管理员\n")
+            return
+
+        # 送算法生成器生成题目
+        if plus_method_count > 0:
+            plus_g = Plus_Calculation_Generator.Level1PlusGenerator(start_num, end_num, plus_method_count)
+            plus_questions, plus_answers = plus_g.generate()
+        if minus_method_count > 0:
+            minus_g = Minus_Calculation_Generator.Level1MinusGenerator(start_num, end_num, minus_method_count)
+            minus_questions, minus_answers = minus_g.generate()
+        if multiply_method_count > 0:
+            multi_g = Multiply_Calculation_Generator.Level1MultiplyGenerator(start_num, end_num, multiply_method_count)
+            multi_questions, multi_answers = multi_g.generate()
+        if divide_method_count > 0:
+            divide_g = Divide_Calculation_Generator.Level1DivideGenerator(start_num, end_num, divide_method_count)
+            divide_questions, divide_answers = divide_g.generate()
+        if compare_method_count > 0:
+            compare_g = Compare_Calculation_Generator.Level1CompareGenerator(start_num, end_num, compare_method_count)
+            compare_questions, compare_answers = compare_g.generate()
 
 
         # 输出状态
