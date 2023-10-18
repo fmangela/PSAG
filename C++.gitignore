@@ -34,3 +34,8 @@
 # Export Files
 *.xlsx
 *.txt
+*.spec
+
+# dir
+/src/build
+/src/dist

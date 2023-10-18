@@ -32,6 +32,7 @@ class MainWindow:
     exercises_num_entry = None
     generate_button = None
     output_text1 = None
+    remainder_check = None
 
     def __init__(self, root_window):
         """
@@ -93,10 +94,12 @@ class MainWindow:
         start_label = tk.Label(range_frame, text="起始数字：", font=("YaHei", 12))
         start_label.grid(column=0, row=1, sticky='we', padx=3, pady=5)
         self.start_entry = tk.Entry(range_frame)
+        self.start_entry.insert(0, "1")
         self.start_entry.grid(column=1, row=1, padx=3, pady=5)
         end_label = tk.Label(range_frame, text="终止数字：", font=("YaHei", 12))
         end_label.grid(column=0, row=2, sticky='we', padx=3, pady=5)
         self.end_entry = tk.Entry(range_frame)
+        self.end_entry.insert(0, "10")
         self.end_entry.grid(column=1, row=2, sticky='we', padx=3, pady=5)
 
         # 生成一个出题参数的frame框，放入选项卡内
@@ -117,6 +120,7 @@ class MainWindow:
             onvalue=1,
             offvalue=0
         )
+        self.plus_check_var.set(1)
         plus_check.grid(column=0, row=1, sticky='we', padx=3, pady=3)
 
         # 减法运算选项
@@ -148,7 +152,8 @@ class MainWindow:
             text="除法运算",
             variable=self.divide_check_var,
             onvalue=1,
-            offvalue=0
+            offvalue=0,
+            command=self.checkbutton_state_change
         )
         divide_check.grid(column=1, row=2, sticky='we', padx=3, pady=3)
 
@@ -165,14 +170,15 @@ class MainWindow:
 
         # 除法运算是否要留余数
         self.remainder_check_var = tk.IntVar()
-        remainder_check = tk.Checkbutton(
+        self.remainder_check = tk.Checkbutton(
             parameter_frame,
             text="余数运算",
             variable=self.remainder_check_var,
             onvalue=1,
-            offvalue=0
+            offvalue=0,
+            state="disabled"
         )
-        remainder_check.grid(column=2, row=2, sticky='we', padx=3, pady=3)
+        self.remainder_check.grid(column=2, row=2, sticky='we', padx=3, pady=3)
 
         # 生成一个出题数量的frame框，放入选项卡内
         exercises_num_frame = tk.Frame(tab1, borderwidth=1, relief="solid")
@@ -182,6 +188,7 @@ class MainWindow:
         exercises_num_label.grid(column=0, row=0, sticky='we', padx=3, pady=3)
         # 添加出题数量
         self.exercises_num_entry = tk.Entry(exercises_num_frame)
+        self.exercises_num_entry.insert(0, "10")
         self.exercises_num_entry.grid(column=1, row=0, sticky='we', padx=3, pady=3)
 
         # 生成按钮
@@ -230,9 +237,9 @@ class MainWindow:
     def disable_button_during_generation(func):
         """
         一个类内的装饰器函数，需要import wraps装饰器函数
+        功能: 装饰一个按钮，在工作的之后将按钮变为不可按状态，工作结束后放开
         :param func: 装饰的函数
         :return: 装饰后的函数
-        功能：装饰一个按钮，在工作的之后将按钮变为不可按状态，工作结束后放开
         """
         @wraps(func)
         def wrapper(self, *args, **kwargs):
@@ -414,6 +421,11 @@ class MainWindow:
         self.text_output_func(self.output_text1, "----------\n")
         return
 
+    def checkbutton_state_change(self):
+        if self.divide_check_var.get() == 0:
+            self.remainder_check.configure(state="disabled")
+        else:
+            self.remainder_check.configure(state="normal")
 
 if __name__ == "__main__":
     """

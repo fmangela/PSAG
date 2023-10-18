@@ -49,3 +49,12 @@ class Level1PlusGenerator(PlusCalculationGenerator):
             questions.append(f"{a} + {b} = ")
             answers.append(f"{a} + {b} = {c}")
         return tuple(questions), tuple(answers)
+
+
+if __name__ == "__main__":
+    """
+    本地测试函数
+    """
+    cls_A = Level1PlusGenerator(1, 10, 10)
+    for i in range(100):
+        print(cls_A.generate())
