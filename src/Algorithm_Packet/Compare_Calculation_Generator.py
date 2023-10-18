@@ -19,7 +19,7 @@ class CompareCalculationGenerator(metaclass=abc.ABCMeta):
         self.count = count
 
     @abc.abstractmethod
-    def generate(self):
+    def generate(self, *args):
         pass
 
 
@@ -34,7 +34,7 @@ class Level1CompareGenerator(CompareCalculationGenerator):
     def __init__(self, start, end, count):
         super().__init__(start, end, count)
 
-    def generate(self):
+    def generate(self, pl, mi, mu, di):
         """
         生成题目
         """
@@ -42,10 +42,79 @@ class Level1CompareGenerator(CompareCalculationGenerator):
         questions = []
         answers = []
         while n <= self.count:
-            c = random.randint(self.start, self.end)
-            a = random.randint(0, c)
-            b = c - a
-            n += 1
-            questions.append(f"{a} + {b} = ")
-            answers.append(f"{a} + {b} = {c}")
+            m = random.randint(1, 5)
+            if m == 1 and pl:
+                # 加法题
+                a = random.randint(self.start, self.end)
+                b = random.randint(self.start, self.end)
+                c = random.randint(self.start, self.end)
+                n += 1
+                questions.append(f"{a} + {b} [ ] {c}")
+                if a + b > c:
+                    answers.append(f"{a} + {b} > {c}")
+                elif a + b < c:
+                    answers.append(f"{a} + {b} < {c}")
+                else:
+                    answers.append(f"{a} + {b} = {c}")
+                continue
+            elif m == 2 and mi:
+                # 减法题
+                a = random.randint(self.start, self.end)
+                b = random.randint(self.start, a)
+                c = random.randint(self.start, self.end)
+                n += 1
+                questions.append(f"{a} - {b} [ ] {c}")
+                if a + b > c:
+                    answers.append(f"{a} + {b} > {c}")
+                elif a + b < c:
+                    answers.append(f"{a} + {b} < {c}")
+                else:
+                    answers.append(f"{a} + {b} = {c}")
+                continue
+            elif m == 3 and mu:
+                # 乘法题
+                a = random.randint(self.start, self.end)
+                b = random.randint(self.start, self.end)
+                c = random.randint(self.start, self.end)
+                n += 1
+                questions.append(f"{a} × {b} [ ] {c}")
+                if a + b > c:
+                    answers.append(f"{a} + {b} > {c}")
+                elif a + b < c:
+                    answers.append(f"{a} + {b} < {c}")
+                else:
+                    answers.append(f"{a} + {b} = {c}")
+                continue
+            elif m == 4 and di:
+                # 除法题
+                a = random.randint(self.start, self.end)
+                c = random.randint(self.start, a)
+                divisors = []
+                for i in range(1, c):
+                    if c % i == 0:
+                        divisors.append(i)
+                b = random.choice(divisors)
+                n += 1
+                questions.append(f"{a} ÷ {b} [ ] {c}")
+                if a + b > c:
+                    answers.append(f"{a} + {b} > {c}")
+                elif a + b < c:
+                    answers.append(f"{a} + {b} < {c}")
+                else:
+                    answers.append(f"{a} + {b} = {c}")
+                continue
+            elif m == 5:
+                # 光比较
+                a = random.randint(self.start, self.end)
+                b = random.randint(self.start, self.end)
+                n += 1
+                questions.append(f"{a} [ ] {b} ")
+                if a > b:
+                    answers.append(f"{a} > {b}")
+                elif a < b:
+                    answers.append(f"{a} < {b}")
+                else:
+                    answers.append(f"{a} = {b}")
+                continue
+
         return tuple(questions), tuple(answers)

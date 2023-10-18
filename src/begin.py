@@ -10,7 +10,9 @@ from tkinter import ttk
 import random
 # import pandas as pd
 # from openpyxl import Workbook
-from Algorithm_Packet import Plus_Calculation_Generator, Minus_Calculation_Generator, Multiply_Calculation_Generator, Divide_Calculation_Generator, Compare_Calculation_Generator
+from Algorithm_Packet import (Plus_Calculation_Generator, Minus_Calculation_Generator, Multiply_Calculation_Generator,
+                              Divide_Calculation_Generator, Compare_Calculation_Generator)
+from IO_Stream import text_file_output
 
 
 class MainWindow:
@@ -365,23 +367,52 @@ class MainWindow:
         if plus_method_count > 0:
             plus_g = Plus_Calculation_Generator.Level1PlusGenerator(start_num, end_num, plus_method_count)
             plus_questions, plus_answers = plus_g.generate()
+        else:
+            plus_questions = ()
+            plus_answers = ()
         if minus_method_count > 0:
             minus_g = Minus_Calculation_Generator.Level1MinusGenerator(start_num, end_num, minus_method_count)
             minus_questions, minus_answers = minus_g.generate()
+        else:
+            minus_questions = ()
+            minus_answers = ()
         if multiply_method_count > 0:
             multi_g = Multiply_Calculation_Generator.Level1MultiplyGenerator(start_num, end_num, multiply_method_count)
             multi_questions, multi_answers = multi_g.generate()
+        else:
+            multi_questions = ()
+            multi_answers = ()
         if divide_method_count > 0:
             divide_g = Divide_Calculation_Generator.Level1DivideGenerator(start_num, end_num, divide_method_count)
-            divide_questions, divide_answers = divide_g.generate()
+            divide_questions, divide_answers = divide_g.generate(choose_remainder)
+        else:
+            divide_questions = ()
+            divide_answers = ()
         if compare_method_count > 0:
             compare_g = Compare_Calculation_Generator.Level1CompareGenerator(start_num, end_num, compare_method_count)
-            compare_questions, compare_answers = compare_g.generate()
+            compare_questions, compare_answers = compare_g.generate(choose_plus, choose_minus, choose_multiply,
+                                                                    choose_divide)
+        else:
+            compare_questions = ()
+            compare_answers = ()
 
+        # 整形
+        questions = (list(plus_questions) + list(minus_questions) + list(multi_questions) +
+                     list(divide_questions) + list(compare_questions))
+        random.shuffle(questions)
+        answers = (list(plus_answers) + list(minus_answers) + list(multi_answers) +
+                   list(divide_answers) + list(compare_answers))
+        random.shuffle(answers)
 
-        # 输出状态
-
-
+        # 输出题目与答案
+        self.text_output_func(self.output_text1, "正在生成文件\n")
+        q_out = text_file_output.TxtFileOut()
+        q_out.write_txt_file(filename="题目.txt", data=questions)
+        a_out = text_file_output.TxtFileOut()
+        a_out.write_txt_file(filename="答案.txt", data=answers)
+        self.text_output_func(self.output_text1, "题目答案生成成功，请在程序目录下查阅\n")
+        self.text_output_func(self.output_text1, "----------\n")
+        return
 
 
 if __name__ == "__main__":
