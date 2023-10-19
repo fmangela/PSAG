@@ -37,5 +37,5 @@
 *.spec
 
 # dir
-/src/build/*.*
+/src/build/begin/*.*
 /src/dist/*.*
