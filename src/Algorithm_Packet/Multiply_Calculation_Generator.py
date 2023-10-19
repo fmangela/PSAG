@@ -41,15 +41,24 @@ class Level1MultiplyGenerator(MultiplyCalculationGenerator):
         n = 0
         questions = []
         answers = []
-        while n <= self.count:
-            c = random.randint(self.start, self.end)
-            divisors = []
-            for i in range(1, c):
-                if c % i == 0:
-                    divisors.append(i)
-            a = random.choice(divisors)
-            b = c / a
-            n += 1
-            questions.append(f"{a} × {b} = ")
-            answers.append(f"{a} × {b} = {c}")
+        while n < self.count:
+            a = random.randint(0, self.end)
+            b = random.randint(0, self.end)
+            if self.start <= a*b <= self.end and b != 1:
+                c = a * b
+                n += 1
+                questions.append(f"{a} × {b} = ")
+                answers.append(f"{a} × {b} = {c}")
         return tuple(questions), tuple(answers)
+
+
+if __name__ == "__main__":
+    """
+    本地测试函数
+    """
+    cls_A = Level1MultiplyGenerator(0, 100, 10000)
+    import Calculation_Analyzer
+
+    anal = Calculation_Analyzer.Analyzer(cls_A.generate()[1])
+    a, b, c = anal.str_to_chart()
+    print_out = anal.print_out(a, b, c)

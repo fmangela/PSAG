@@ -42,24 +42,39 @@ class Level1DivideGenerator(DivideCalculationGenerator):
         questions = []
         answers = []
         if remainder:  # 带余数的算式题
-            while n <= self.count:
-                c = random.randint(self.start, self.end)
-                a = random.randint(c, self.end)
-                b = a // c
-                n += 1
-                questions.append(f"{a} ÷ {b} = ")
-                answers.append(f"{a} ÷ {b} = {c}")
+            while n < self.count:
+                a = random.randint(self.start, self.end)
+                b = random.randint(1, self.end)
+                if a > b*2:
+                    c = int(a // b)
+                    re = int(a % b)
+                    n += 1
+                    questions.append(f"{a} ÷ {b} = ")
+                    answers.append(f"{a} ÷ {b} = {c}...{re}")
             return tuple(questions), tuple(answers)
         else:  # 不带余数的算式题
-            while n <= self.count:
+            while n < self.count:
                 a = random.randint(self.start, self.end)
                 divisors = []
-                for j in range(1, a):
+                for j in range(2, a):
                     if a % j == 0:
                         divisors.append(j)
-                b = random.choice(divisors)
-                c = a / b
-                n += 1
-                questions.append(f"{a} ÷ {b} = ")
-                answers.append(f"{a} ÷ {b} = {c}")
+                if divisors:
+                    b = random.choice(divisors)
+                    c = int(a / b)
+                    n += 1
+                    questions.append(f"{a} ÷ {b} = ")
+                    answers.append(f"{a} ÷ {b} = {c}")
             return tuple(questions), tuple(answers)
+
+
+if __name__ == "__main__":
+    """
+    本地测试函数
+    """
+    cls_A = Level1DivideGenerator(0, 100, 10000)
+    import Calculation_Analyzer
+
+    anal = Calculation_Analyzer.Analyzer(cls_A.generate(remainder=0)[1])
+    a, b, c = anal.str_to_chart()
+    print_out = anal.print_out(a, b, c)

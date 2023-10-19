@@ -41,7 +41,7 @@ class Level1MinusGenerator(MinusCalculationGenerator):
         n = 0
         questions = []
         answers = []
-        while n <= self.count:
+        while n < self.count:
             c = random.randint(self.start, self.end)
             a = random.randint(c, self.end)
             b = a - c
@@ -49,3 +49,14 @@ class Level1MinusGenerator(MinusCalculationGenerator):
             questions.append(f"{a} - {b} = ")
             answers.append(f"{a} - {b} = {c}")
         return tuple(questions), tuple(answers)
+
+
+if __name__ == "__main__":
+    """
+    本地测试函数
+    """
+    cls_A = Level1MinusGenerator(10, 100, 10000)
+    import Calculation_Analyzer
+    anal = Calculation_Analyzer.Analyzer(cls_A.generate()[1])
+    a, b, c = anal.str_to_chart()
+    print_out = anal.print_out(a, b, c)

@@ -41,7 +41,7 @@ class Level1PlusGenerator(PlusCalculationGenerator):
         n = 0
         questions = []
         answers = []
-        while n <= self.count:
+        while n < self.count:
             c = random.randint(self.start, self.end)
             a = random.randint(0, c)
             b = c - a
@@ -55,6 +55,8 @@ if __name__ == "__main__":
     """
     本地测试函数
     """
-    cls_A = Level1PlusGenerator(1, 10, 10)
-    for i in range(100):
-        print(cls_A.generate())
+    cls_A = Level1PlusGenerator(1, 10, 10000)
+    import Calculation_Analyzer
+    anal = Calculation_Analyzer.Analyzer(cls_A.generate()[1])
+    a, b, c = anal.str_to_chart()
+    print_out = anal.print_out(a, b, c)

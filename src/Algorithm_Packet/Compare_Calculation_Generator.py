@@ -41,7 +41,7 @@ class Level1CompareGenerator(CompareCalculationGenerator):
         n = 0
         questions = []
         answers = []
-        while n <= self.count:
+        while n < self.count:
             m = random.randint(1, 5)
             if m == 1 and pl:
                 # 加法题
@@ -64,12 +64,12 @@ class Level1CompareGenerator(CompareCalculationGenerator):
                 c = random.randint(self.start, self.end)
                 n += 1
                 questions.append(f"{a} - {b} [ ] {c}")
-                if a + b > c:
-                    answers.append(f"{a} + {b} > {c}")
-                elif a + b < c:
-                    answers.append(f"{a} + {b} < {c}")
+                if a - b > c:
+                    answers.append(f"{a} - {b} > {c}")
+                elif a - b < c:
+                    answers.append(f"{a} - {b} < {c}")
                 else:
-                    answers.append(f"{a} + {b} = {c}")
+                    answers.append(f"{a} - {b} = {c}")
                 continue
             elif m == 3 and mu:
                 # 乘法题
@@ -78,30 +78,26 @@ class Level1CompareGenerator(CompareCalculationGenerator):
                 c = random.randint(self.start, self.end)
                 n += 1
                 questions.append(f"{a} × {b} [ ] {c}")
-                if a + b > c:
-                    answers.append(f"{a} + {b} > {c}")
-                elif a + b < c:
-                    answers.append(f"{a} + {b} < {c}")
+                if a * b > c:
+                    answers.append(f"{a} × {b} > {c}")
+                elif a * b < c:
+                    answers.append(f"{a} × {b} < {c}")
                 else:
-                    answers.append(f"{a} + {b} = {c}")
+                    answers.append(f"{a} × {b} = {c}")
                 continue
             elif m == 4 and di:
                 # 除法题
                 a = random.randint(self.start, self.end)
-                c = random.randint(self.start, a)
-                divisors = []
-                for i in range(1, c):
-                    if c % i == 0:
-                        divisors.append(i)
-                b = random.choice(divisors)
+                b = random.randint(1, a)
+                c = random.randint(self.start, self.end)
                 n += 1
                 questions.append(f"{a} ÷ {b} [ ] {c}")
-                if a + b > c:
-                    answers.append(f"{a} + {b} > {c}")
-                elif a + b < c:
-                    answers.append(f"{a} + {b} < {c}")
+                if a / b > c:
+                    answers.append(f"{a} ÷ {b} > {c}")
+                elif a / b < c:
+                    answers.append(f"{a} ÷ {b} < {c}")
                 else:
-                    answers.append(f"{a} + {b} = {c}")
+                    answers.append(f"{a} ÷ {b} = {c}")
                 continue
             elif m == 5:
                 # 光比较
@@ -118,3 +114,15 @@ class Level1CompareGenerator(CompareCalculationGenerator):
                 continue
 
         return tuple(questions), tuple(answers)
+
+
+if __name__ == "__main__":
+    """
+    本地测试函数
+    """
+    cls_A = Level1CompareGenerator(0, 100, 10000)
+    import Calculation_Analyzer
+
+    anal = Calculation_Analyzer.Analyzer(cls_A.generate(1, 0, 0, 0)[1])
+    a, b, c = anal.str_to_chart()
+    print_out = anal.print_out(a, b, c)

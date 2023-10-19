@@ -198,7 +198,7 @@ class MainWindow:
         # 输出对话框
         text_frame = tk.Frame(tab1, borderwidth=1, relief="solid")
         text_frame.grid(column=0, row=4, sticky='we', padx=5, pady=5)
-        self.output_text1 = tk.Text(text_frame, width=30, height=5, state='disabled')
+        self.output_text1 = tk.Text(text_frame, width=30, height=10, state='disabled')
         self.output_text1.grid(column=0, row=1, sticky='we', padx=5, pady=5)
         output_scrollbar = tk.Scrollbar(text_frame, command=self.output_text1.yview)
         output_scrollbar.grid(row=1, column=1, sticky='ns')
@@ -256,6 +256,9 @@ class MainWindow:
         :return:
         """
         # 开始运行
+        self.output_text1.configure(state='normal')
+        self.output_text1.delete(1.0, 'end')
+        self.output_text1.configure(state='disabled')
         self.text_output_func(self.output_text1, "----------\n")
         # 获取参数
         self.text_output_func(self.output_text1, "正在获取参数\n")
