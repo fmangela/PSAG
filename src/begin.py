@@ -317,7 +317,7 @@ class MainWindow:
             self.text_output_func(self.output_text1, "内部错误，请联系管理员\n")
             return
         # 一定要勾选算法题目
-        if not(choose_plus or choose_minus or choose_multiply or choose_divide or choose_compare):
+        if not (choose_plus or choose_minus or choose_multiply or choose_divide or choose_compare):
             self.text_output_func(self.output_text1, "请至少选择一项算法\n")
             return
 
@@ -368,7 +368,7 @@ class MainWindow:
             elif i == "compare":
                 compare_method_count += 1
         # 平均出题数量算法验证
-        if not(exercises_num == sum([plus_method_count, minus_method_count,
+        if not (exercises_num == sum([plus_method_count, minus_method_count,
                                      multiply_method_count, divide_method_count, compare_method_count])):
             self.text_output_func(self.output_text1, "算法错误，请联系管理员\n")
             return
@@ -429,6 +429,7 @@ class MainWindow:
             self.remainder_check.configure(state="disabled")
         else:
             self.remainder_check.configure(state="normal")
+
 
 if __name__ == "__main__":
     """
