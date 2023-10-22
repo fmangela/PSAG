@@ -6,7 +6,7 @@ from functools import wraps
 import tkinter as tk
 from tkinter import ttk
 import random
-from src.UI_initialize import tab1_init
+from . import tab1_init
 
 
 class MainWindow:

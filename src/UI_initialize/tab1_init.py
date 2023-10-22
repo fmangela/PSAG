@@ -2,20 +2,23 @@
 此为第一选项卡初始化包
 """
 # import
-from src.UI_initialize import main_window_init
+# from . import main_window_init
 from functools import wraps
 import tkinter as tk
-from tkinter import ttk
+# from tkinter import ttk
 # from tkinter import messagebox
 import random
 # import pandas as pd
 # from openpyxl import Workbook
-from src.Algorithm_Packet import Plus_Calculation_Generator, Minus_Calculation_Generator, \
+# import os
+import sys
+sys.path.append("..")
+from Algorithm_Packet import Plus_Calculation_Generator, Minus_Calculation_Generator, \
     Multiply_Calculation_Generator, Divide_Calculation_Generator, Compare_Calculation_Generator
-from src.IO_Stream import text_file_output
+from IO_Stream import text_file_output
 
 
-class Tab1(main_window_init.MainWindow):
+class Tab1:
     """
     这是选项卡1的初始化类
     :function:init_tab1
