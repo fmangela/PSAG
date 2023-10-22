@@ -11,5 +11,7 @@ if __name__ == "__main__":
     主要执行程序
     """
     root = tk.Tk()
+    root.wm_iconbitmap('image/calcu.ico')
     main_window = main_window_init.MainWindow(root)
+    root.resizable(False, False)
     root.mainloop()
